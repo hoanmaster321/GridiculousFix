@@ -1,0 +1,11 @@
+Package: com.ryannair05.gridiculousfix
+Name: gridiculousfix
+Version: 1.0.0
+Architecture: iphoneos-arm
+Description: Fix gridiculous on iOS 14!
+Maintainer: Ryan Nair
+Author: Ryan Nair
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000), firmware (>=14.0)
+Provides: com.chpwn.iconsupport, com.muirey03.iconsupportfix
+Replaces: com.chpwn.iconsupport, com.muirey03.iconsupportfix
