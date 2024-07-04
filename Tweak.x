@@ -1,9 +1,18 @@
+#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-%hook UIScreen
+%hook _UIDisplayLinkCADisplay
 
-- (void)setWantsLowPowerMode:(BOOL)arg1 {
-    // Không làm gì cả, giữ nguyên 120Hz
+- (void)setPreferredFramesPerSecond:(NSInteger)fps {
+    %orig(120);
+}
+
+%end
+
+%hook _UIScreenCADisplay
+
+- (void)setMaximumFramesPerSecond:(NSInteger)fps {
+    %orig(120);
 }
 
 %end
