@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-%hook _UIDisplayLinkCADisplay
+%hook SBFFlexibleSystemRateSettings
 
 - (void)setPreferredFramesPerSecond:(NSInteger)fps {
     %orig(120);
@@ -9,9 +9,9 @@
 
 %end
 
-%hook _UIScreenCADisplay
+%hook _UIWindowSceneDisplayLinkTargetedProxy
 
-- (void)setMaximumFramesPerSecond:(NSInteger)fps {
+- (void)setPreferredFramesPerSecond:(NSInteger)fps {
     %orig(120);
 }
 
