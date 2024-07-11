@@ -1,18 +1,16 @@
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
+%hook FBAppDelegate
 
-%hook SBFFlexibleSystemRateSettings
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
+    NSString *plistPath = [bundlePath stringByAppendingPathComponent:@"Info.plist"];
+    NSMutableDictionary *plistDict = [[NSMutableDictionary alloc] initWithContentsOfFile:plistPath];
 
-- (void)setPreferredFramesPerSecond:(NSInteger)fps {
-    %orig(120);
-}
+    if (plistDict) {
+        plistDict[@"FBAppVersion"] = @"555";
+        [plistDict writeToFile:plistPath atomically:YES];
+    }
 
-%end
-
-%hook _UIWindowSceneDisplayLinkTargetedProxy
-
-- (void)setPreferredFramesPerSecond:(NSInteger)fps {
-    %orig(120);
+    return %orig(application, didFinishLaunchingWithOptions:launchOptions);
 }
 
 %end
