@@ -1,4 +1,4 @@
-Package: com.hoanpro.StatusBar
+Package: com.hoanpro.statusbar
 Name: StatusBar
 Version: 1.0.0
 Architecture: iphoneos-arm64
