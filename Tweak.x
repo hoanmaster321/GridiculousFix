@@ -1,19 +1,12 @@
-#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <objc/runtime.h>
 
-%hook FBAppDelegate
+%hook UIStatusBar
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
-    NSString *plistPath = [bundlePath stringByAppendingPathComponent:@"Info.plist"];
-    NSMutableDictionary *plistDict = [[NSMutableDictionary alloc] initWithContentsOfFile:plistPath];
-
-    if (plistDict) {
-        plistDict[@"FBAppVersion"] = @"555";
-        [plistDict writeToFile:plistPath atomically:YES];
-    }
-
-    return %orig(application, didFinishLaunchingWithOptions:launchOptions);
+- (void)setFrame:(CGRect)frame {
+    frame.size.height = 40; // Điều chỉnh chiều cao status bar
+    frame.origin.y = 50;    // Điều chỉnh vị trí y của status bar
+    %orig(frame);
 }
 
 %end
