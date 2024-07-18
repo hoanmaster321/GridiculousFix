@@ -2,11 +2,9 @@
 #import <objc/runtime.h>
 
 %hook UIStatusBar
-
-- (void)setFrame:(CGRect)frame {
-    frame.size.height = 40; // Điều chỉnh chiều cao status bar
-    frame.origin.y = 50;    // Điều chỉnh vị trí y của status bar
-    %orig(frame);
+- (CGSize)sizeThatFits:(CGSize)size {
+    CGSize newSize = %orig;
+    newSize.height *= 3; // Thay đổi hệ số này để điều chỉnh chiều cao
+    return newSize;
 }
-
 %end
