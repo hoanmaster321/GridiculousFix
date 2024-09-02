@@ -2,17 +2,31 @@
 
 @interface SBBacklightController : NSObject
 + (instancetype)sharedInstance;
-- (void)setBacklightFactor:(float)factor source:(NSInteger)source;
+- (void)turnOnScreenFullyWithBacklightSource:(NSInteger)source;
 @end
 
-%hook SBLockScreenViewController
+@interface SBHomeHardwareButtonService : NSObject
++ (instancetype)sharedInstance;
+- (void)simulateSinglePressOfHomeButton;
+@end
 
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+%hook SpringBoard
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     %orig;
     
-    SBBacklightController *backlightController = [%c(SBBacklightController) sharedInstance];
-    if (backlightController) {
-        [backlightController setBacklightFactor:1.0 source:1];
+    UIScreen *mainScreen = [UIScreen mainScreen];
+    if (mainScreen.brightness == 0) {
+        SBBacklightController *backlight = [%c(SBBacklightController) sharedInstance];
+        if (backlight) {
+            [backlight turnOnScreenFullyWithBacklightSource:1];
+        }
+        
+        // Simulate a home button press to wake the device
+        SBHomeHardwareButtonService *homeButtonService = [%c(SBHomeHardwareButtonService) sharedInstance];
+        if (homeButtonService) {
+            [homeButtonService simulateSinglePressOfHomeButton];
+        }
     }
 }
 
