@@ -5,10 +5,6 @@
 - (BOOL)isVisible;
 @end
 
-@interface SBSRelaunchAction : NSObject
-+ (instancetype)actionWithReason:(NSString *)reason options:(NSUInteger)options targetURL:(NSURL *)url;
-@end
-
 @interface SBBacklightController : NSObject
 + (instancetype)sharedInstance;
 - (void)turnOnScreenFullyWithBacklightSource:(NSInteger)source;
@@ -26,9 +22,8 @@
         SBBacklightController *backlightController = [%c(SBBacklightController) sharedInstance];
         [backlightController turnOnScreenFullyWithBacklightSource:1];
         
-        // Tạo và thực hiện action để đánh thức thiết bị
-        SBSRelaunchAction *wakeUpAction = [%c(SBSRelaunchAction) actionWithReason:@"TouchWake" options:0 targetURL:nil];
-        [[%c(SBMainScreenManager) sharedInstance] wakeUpScreenWithCompletion:nil];
+        // Đánh thức thiết bị
+        [[%c(SBLockScreenManager) sharedInstance] unlockUIFromSource:0 withOptions:nil];
     }
 }
 
