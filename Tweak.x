@@ -1,4 +1,15 @@
+// Tweak.x
+
 #import <UIKit/UIKit.h>
+#import <SpringBoard/SpringBoard.h>
+
+@interface SBBacklightController : NSObject
++ (id)sharedInstance;
+- (void)setBacklightFactor:(float)factor source:(long long)source;
+@end
+
+@interface SBLockScreenViewController : UIViewController
+@end
 
 %hook SBLockScreenViewController
 
@@ -11,7 +22,8 @@
 
 %new
 - (void)handleTap:(UITapGestureRecognizer *)recognizer {
-    [[%c(SBBacklightController) sharedInstance] turnOnScreenFullyWithBacklightSource:1];
+    SBBacklightController *backlightController = [%c(SBBacklightController) sharedInstance];
+    [backlightController setBacklightFactor:1.0 source:1];
 }
 
 %end
