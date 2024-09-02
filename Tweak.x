@@ -1,13 +1,18 @@
 #import <UIKit/UIKit.h>
+#import <SpringBoard/SpringBoard.h>
 
-%hook _UIStatusBar
+%hook SBLockScreenViewController
 
-- (CGSize)_intrinsicContentSizeForOrientation:(UIInterfaceOrientation)orientation {
-    // Thiết lập chiều cao và chiều rộng cụ thể
-    CGSize originalSize = %orig(orientation);
-    originalSize.height = 40.0; // Thay đổi giá trị này để điều chỉnh chiều cao
-    originalSize.width = 375.0; // Thay đổi giá trị này để điều chỉnh chiều rộng (tùy theo kích thước màn hình)
-    return originalSize;
+// Hook vào sự kiện chạm vào màn hình khóa
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    [super touchesBegan:touches withEvent:event];
+
+    // Kiểm tra xem màn hình có đang khóa không
+    if ([self isVisible]) {
+        // Bật sáng màn hình khi chạm vào
+        SBSRelaunchAction *wakeUpAction = [NSClassFromString(@"SBSRelaunchAction") actionWithReason:@"TouchWake" options:SBSRelaunchActionOptionNone targetURL:nil];
+        [[NSClassFromString(@"SBSRelaunchAction") mainScreen] wakeWithCompletion:nil];
+    }
 }
 
 %end
