@@ -5,7 +5,8 @@
 
 // Hook vào sự kiện chạm vào màn hình khóa
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    [super touchesBegan:touches withEvent:event];
+    // Gọi phương thức gốc
+    %orig(touches, event);
 
     // Kiểm tra xem màn hình có đang khóa không
     if ([self isVisible]) {
