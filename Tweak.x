@@ -1,17 +1,23 @@
 #import <UIKit/UIKit.h>
-#import <SpringBoard/SpringBoard.h>
 
-@interface SBBacklightController : NSObject
-- (void)_handleUserTouchOnScreen;
-@end
+%hook SpringBoard
 
-%hook SBBacklightController
-
-- (void)_handleUserTouchOnScreen {
-    // Bật màn hình khi chạm vào
-    [self _resetLockScreenIdleTimer];
-    [self _noteBacklightLevelDidChange];
+- (void)applicationDidFinishLaunching:(id)application {
     %orig;
+    
+    // Kích hoạt tính năng Tap to Wake
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleTapToWake:)
+                                                 name:@"SBBacklightControllerAutoDimmedNotification"
+                                               object:nil];
+}
+
+- (void)handleTapToWake:(NSNotification *)notification {
+    UIScreen *mainScreen = [UIScreen mainScreen];
+    if (mainScreen.brightness == 0) {
+        // Set độ sáng màn hình lên giá trị nhỏ nhất có thể (kích hoạt màn hình)
+        [mainScreen setBrightness:0.01];
+    }
 }
 
 %end
