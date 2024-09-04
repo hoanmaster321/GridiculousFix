@@ -1,23 +1,29 @@
+#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+
+@interface SpringBoard : UIApplication
+- (void)_simulateLockButtonPress;
+@end
 
 %hook SpringBoard
 
 - (void)applicationDidFinishLaunching:(id)application {
     %orig;
     
-    // Kích hoạt tính năng Tap to Wake
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(handleTapToWake:)
-                                                 name:@"SBBacklightControllerAutoDimmedNotification"
-                                               object:nil];
+    UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+    tapRecognizer.numberOfTapsRequired = 2;
+    [[self keyWindow] addGestureRecognizer:tapRecognizer];
 }
 
-- (void)handleTapToWake:(NSNotification *)notification {
-    UIScreen *mainScreen = [UIScreen mainScreen];
-    if (mainScreen.brightness == 0) {
-        // Set độ sáng màn hình lên giá trị nhỏ nhất có thể (kích hoạt màn hình)
-        [mainScreen setBrightness:0.01];
+%new
+- (void)handleTap:(UITapGestureRecognizer *)recognizer {
+    if ([[UIScreen mainScreen] brightness] == 0) {
+        [self _simulateLockButtonPress];
     }
 }
 
 %end
+
+%ctor {
+    %init(SpringBoard);
+}
