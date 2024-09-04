@@ -9,19 +9,26 @@
 
 - (void)applicationDidFinishLaunching:(id)application {
     %orig;
-    
-    UIWindow *mainWindow;
-    if (@available(iOS 13.0, *)) {
-        // iOS 13 trở lên, hỗ trợ nhiều scenes
+
+    UIWindow *mainWindow = nil;
+    if (@available(iOS 15.0, *)) {
+        for (UIWindowScene *scene in [UIApplication sharedApplication].connectedScenes) {
+            if (scene.activationState == UISceneActivationStateForegroundActive) {
+                mainWindow = scene.windows.firstObject;
+                break;
+            }
+        }
+    } else if (@available(iOS 13.0, *)) {
         mainWindow = [UIApplication sharedApplication].windows.firstObject;
     } else {
-        // iOS cũ hơn, sử dụng keyWindow
         mainWindow = [UIApplication sharedApplication].keyWindow;
     }
     
-    UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
-    tapRecognizer.numberOfTapsRequired = 2;
-    [mainWindow addGestureRecognizer:tapRecognizer];
+    if (mainWindow) {
+        UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+        tapRecognizer.numberOfTapsRequired = 2;
+        [mainWindow addGestureRecognizer:tapRecognizer];
+    }
 }
 
 %new
