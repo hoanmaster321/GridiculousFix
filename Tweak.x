@@ -1,33 +1,17 @@
 #import <UIKit/UIKit.h>
+#import <SpringBoard/SpringBoard.h>
 
 @interface SBBacklightController : NSObject
-+ (instancetype)sharedInstance;
-- (void)turnOnScreenFullyWithBacklightSource:(NSInteger)source;
+- (void)_handleUserTouchOnScreen;
 @end
 
-@interface SBHomeHardwareButtonService : NSObject
-+ (instancetype)sharedInstance;
-- (void)simulateSinglePressOfHomeButton;
-@end
+%hook SBBacklightController
 
-%hook SpringBoard
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+- (void)_handleUserTouchOnScreen {
+    // Bật màn hình khi chạm vào
+    [self _resetLockScreenIdleTimer];
+    [self _noteBacklightLevelDidChange];
     %orig;
-    
-    UIScreen *mainScreen = [UIScreen mainScreen];
-    if (mainScreen.brightness == 0) {
-        SBBacklightController *backlight = [%c(SBBacklightController) sharedInstance];
-        if (backlight) {
-            [backlight turnOnScreenFullyWithBacklightSource:1];
-        }
-        
-        // Simulate a home button press to wake the device
-        SBHomeHardwareButtonService *homeButtonService = [%c(SBHomeHardwareButtonService) sharedInstance];
-        if (homeButtonService) {
-            [homeButtonService simulateSinglePressOfHomeButton];
-        }
-    }
 }
 
 %end
