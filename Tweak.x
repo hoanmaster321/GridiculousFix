@@ -9,19 +9,19 @@
 
 - (void)applicationDidFinishLaunching:(id)application {
     %orig;
-
+    
     UIWindow *mainWindow = nil;
     if (@available(iOS 15.0, *)) {
-        for (UIWindowScene *scene in [UIApplication sharedApplication].connectedScenes) {
-            if (scene.activationState == UISceneActivationStateForegroundActive) {
-                mainWindow = scene.windows.firstObject;
-                break;
+        // Tìm kiếm một UIWindowScene đang hoạt động
+        for (UIScene *scene in [UIApplication sharedApplication].connectedScenes) {
+            if ([scene isKindOfClass:[UIWindowScene class]]) {
+                UIWindowScene *windowScene = (UIWindowScene *)scene;
+                if (windowScene.activationState == UISceneActivationStateForegroundActive) {
+                    mainWindow = windowScene.windows.firstObject;
+                    break;
+                }
             }
         }
-    } else if (@available(iOS 13.0, *)) {
-        mainWindow = [UIApplication sharedApplication].windows.firstObject;
-    } else {
-        mainWindow = [UIApplication sharedApplication].keyWindow;
     }
     
     if (mainWindow) {
